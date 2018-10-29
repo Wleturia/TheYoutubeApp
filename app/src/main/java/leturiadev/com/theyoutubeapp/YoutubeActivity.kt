@@ -3,6 +3,7 @@ package leturiadev.com.theyoutubeapp
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
@@ -16,6 +17,7 @@ const val YOUTUBE_PLAYLIST = "PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG"
 
 class YoutubeActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener {
 
+    private val TAG = "YoutubeActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,8 +39,17 @@ class YoutubeActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListen
         playerView.initialize(getString(R.string.GOOGLE_API_KEY), this)
     }
 
-    override fun onInitializationSuccess(p0: YouTubePlayer.Provider?, p1: YouTubePlayer?, p2: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onInitializationSuccess(
+        provider: YouTubePlayer.Provider?,
+        youtubePlayer: YouTubePlayer?,
+        wasRestored: Boolean
+    ) {
+        Log.d(TAG, "onInitializationSuccess: provider is ${provider?.javaClass}")
+        Log.d(TAG, "onInitializationSuccess: youtubePlayer is ${youtubePlayer?.javaClass}")
+        Toast.makeText(this, "Initialized Youtube Player successfully", Toast.LENGTH_SHORT).show()
+        if (!wasRestored) {
+            youtubePlayer?.cueVideo(YOUTUBE_VIDEO_ID)
+        }
     }
 
     override fun onInitializationFailure(
