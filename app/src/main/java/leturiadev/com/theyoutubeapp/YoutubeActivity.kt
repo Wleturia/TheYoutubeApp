@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
@@ -29,19 +30,29 @@ class YoutubeActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListen
         layout.addView(button1)
 
         val playerView = YouTubePlayerView(this)
-        playerView.layoutParams = ConstraintLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-        )
-
+        playerView.layoutParams =
+                ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layout.addView(playerView)
+
+        playerView.initialize(getString(R.string.GOOGLE_API_KEY), this)
     }
 
     override fun onInitializationSuccess(p0: YouTubePlayer.Provider?, p1: YouTubePlayer?, p2: Boolean) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onInitializationFailure(
+        provider: YouTubePlayer.Provider?,
+        youtubeInitializationResult: YouTubeInitializationResult?
+    ) {
+        val REQUEST_CODE = 0
+
+        if (youtubeInitializationResult?.isUserRecoverableError == true) {
+            youtubeInitializationResult.getErrorDialog(this, REQUEST_CODE).show()
+        } else {
+            val errorMessage = "There was an error initializing the YoutubePlayer ($youtubeInitializationResult)"
+            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+        }
     }
 
 }
